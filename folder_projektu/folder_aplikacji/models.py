@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 # Model Kuchnia reprezentuje różne kuchnie świata, np. włoska, azjatycka.
 # Posiada pola: nazwa (unikalna) i opis (opcjonalny).
+MONTHS = models.IntegerChoices('Miesiace', 'Styczeń Luty Marzec Kwiecień Maj Czerwiec Lipiec Sierpień Wrzesień Październik Listopad Grudzień')
+
 class Person(models.Model):
 
     name = models.CharField(max_length=60, )
@@ -14,7 +16,7 @@ class Person(models.Model):
 class Uzytkownik(models.Model):
     imie = models.CharField(max_length=100, blank = False, null = False)
     nazwisko = models.CharField(max_length=500, blank = False, null = False)
-    pseudonim = models.CharField(max_length=100, blank)
+    pseudonim = models.CharField(max_length=100, blank= False)
     email = models.EmailField(unique=True, blank=False, null=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 
@@ -41,25 +43,11 @@ class Skladnik(models.Model):
 
 # Model Recenzja przechowuje recenzje przepisów od użytkowników.
 # Zawiera ocenę (1-5), opcjonalny komentarz oraz informacje o dacie utworzenia.
-class Recenzja(models.Model):
-    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE, related_name="recenzje")
-    uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE)
-    ocena = models.PositiveIntegerField(default=1, choices=[(i, str(i)) for i in range(1, 6)])
-    komentarz = models.TextField(blank=True, null=True)
-    data_utworzenia = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Recenzja od {self.uzytkownik.username} - {self.ocena} gwiazdek"
 
 # Model UlubionePrzepisy przechowuje listę ulubionych przepisów użytkownika.
 # Zawiera odniesienie do użytkownika i przepisu oraz datę dodania.
-class UlubionePrzepisy(models.Model):
-    uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ulubione_przepisy")
-    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE, related_name="ulubione_przez")
-    data_dodania = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.uzytkownik.username} dodał do ulubionych {self.przepis.tytul}"
 
 # Model NarzedzieKuchenne reprezentuje narzędzia kuchenne (np. mikser, nóż).
 # Zawiera nazwę, opis oraz powiązania z kuchniami, w których narzędzie jest używane.
@@ -93,8 +81,6 @@ class Przepis(models.Model):
         ('T', 'TRUDNY'),
     )
 
-
-class Przepis(models.Model):
     tytul = models.CharField(max_length=100, blank = False, null = False)
     opis = models.TextField(blank = False, null = False)
     difficulty_levels = models.CharField(max_length=1, choices = DIFFICULTY_LEVELS, default=DIFFICULTY_LEVELS[0][0])
@@ -108,11 +94,29 @@ class Przepis(models.Model):
     data_utworzenia = models.DateTimeField(auto_now_add=True)
     data_aktualizacji = models.DateTimeField(auto_now=True)
 
-      def calkowity_czas(self):
+    def calkowity_czas(self):
         return self.czas_przygotowania + self.czas_gotowania
 
     def __str__(self):
         return self.tytul
 
-     def __str__(self):
+    def __str__(self):
         return self.name
+    
+class Recenzja(models.Model):
+    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE, related_name="recenzje")
+    uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE)
+    ocena = models.PositiveIntegerField(default=1, choices=[(i, str(i)) for i in range(1, 6)])
+    komentarz = models.TextField(blank=True, null=True)
+    data_utworzenia = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Recenzja od {self.uzytkownik.username} - {self.ocena} gwiazdek"
+    
+class UlubionePrzepisy(models.Model):
+    uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ulubione_przepisy")
+    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE, related_name="ulubione_przez")
+    data_dodania = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.uzytkownik.username} dodał do ulubionych {self.przepis.tytul}"
