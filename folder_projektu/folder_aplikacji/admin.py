@@ -1,7 +1,11 @@
 # Admin.py:
 
+from django.contrib.auth.models import User
 from django.contrib import admin
 from .models import Person, Uzytkownik, Kuchnia, Skladnik, NarzedzieKuchenne, PreferencjeDietetyczne, Przepis, Recenzja, UlubionePrzepisy, PrzepisSkladnik
+from django.utils import timezone
+from folder_aplikacji.models import Przepis, Kuchnia, Skladnik
+
 
 # Rejestracja modelu Person z dekoratorem i konfiguracją list_display oraz filtrami
 @admin.register(Person)
@@ -75,3 +79,5 @@ class UlubionePrzepisyAdmin(admin.ModelAdmin):
 class PrzepisSkladnikAdmin(admin.ModelAdmin):
     list_display = ['przepis', 'skladnik', 'ilosc']
     search_fields = ['przepis__tytul', 'skladnik__nazwa']
+
+

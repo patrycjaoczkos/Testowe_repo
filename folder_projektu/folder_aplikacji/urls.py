@@ -1,11 +1,10 @@
 # urls.py:
-
-from django.urls import path
+from django.urls import include, path
 from . import views
 
 urlpatterns = [
     # API endpoints for Przepis
-    path('api/przepisy/', views.przepis_list, name='przepis-list'),
+    path('api/przepisy/', views.przepis_list_api, name='przepis-list-api'),
     path('api/przepisy/<int:pk>/', views.przepis_detail, name='przepis-detail'),
 
     # API endpoints for Kuchnia
@@ -23,4 +22,6 @@ urlpatterns = [
     path('przepisy/', views.przepis_list_html, name='przepis-list-html'),
     path('przepisy/<int:pk>/', views.przepis_detail_html, name='przepis-detail-html'),
     
+    # Jeśli masz dodatkowe URL dla innych aplikacji, usuń ten wpis, jeśli nie jest potrzebny
+    # path('api/', include('folder_aplikacji.urls')), # Usuń jeśli nie masz tej aplikacji
 ]

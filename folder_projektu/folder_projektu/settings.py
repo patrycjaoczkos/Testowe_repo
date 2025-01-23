@@ -153,8 +153,8 @@ REST_FRAMEWORK = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,  # Umożliwia ładowanie szablonów z katalogu 'templates' w aplikacjach
+        'DIRS': [BASE_DIR / 'templates'],  # jeśli masz główny folder templates w katalogu głównym projektu
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -165,3 +165,4 @@ TEMPLATES = [
         },
     },
 ]
+

@@ -1,22 +1,19 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import status
-from .models import Person, Uzytkownik, Przepis, Kuchnia, Skladnik, Recenzja, UlubionePrzepisy, NarzedzieKuchenne
+from .models import Person, Przepis, Kuchnia, Skladnik, Recenzja
 from .serializers import (
     PersonSerializer,
     PrzepisSerializer,
     KuchniaSerializer,
     SkladnikSerializer,
     RecenzjaSerializer,
-    UlubionePrzepisySerializer,
-    NarzedzieKuchenneSerializer,
 )
-from django.shortcuts import render
-from .models import Przepis
+
+# Widoki API dla modelu Person
 
 @api_view(['GET'])
 def person_list(request):
@@ -67,11 +64,14 @@ def person_delete(request, pk):
 
     person.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 # Widoki API dla modelu Przepis
+
 @api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def przepis_list(request):
+def przepis_list_api(request):
     if request.method == 'GET':
         przepisy = Przepis.objects.all()
         serializer = PrzepisSerializer(przepisy, many=True)
@@ -83,6 +83,7 @@ def przepis_list(request):
             serializer.save(autor=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def przepis_detail(request, pk):
@@ -103,7 +104,21 @@ def przepis_detail(request, pk):
         przepis.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+# Widoki HTML dla modelu Przepis
+
+def przepis_list_html(request):
+    przepisy = Przepis.objects.all()[:5]  # Pobierz pierwsze 5 przepisów
+    return render(request, 'przepisy/lista.html', {'przepisy': przepisy})
+
+
+def przepis_detail_html(request, pk):
+    przepis = get_object_or_404(Przepis, pk=pk)
+    return render(request, 'przepisy/przepis_detail.html', {'przepis': przepis})
+
+
 # Widoki API dla modelu Kuchnia
+
 @api_view(['GET', 'POST'])
 def kuchnia_list(request):
     if request.method == 'GET':
@@ -117,6 +132,7 @@ def kuchnia_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def kuchnia_detail(request, pk):
@@ -137,7 +153,9 @@ def kuchnia_detail(request, pk):
         kuchnia.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 # Widoki API dla modelu Skladnik
+
 @api_view(['GET', 'POST'])
 def skladnik_list(request):
     if request.method == 'GET':
@@ -151,6 +169,7 @@ def skladnik_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def skladnik_detail(request, pk):
@@ -171,7 +190,9 @@ def skladnik_detail(request, pk):
         skladnik.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# Widoki API dla modelu Recenzja
+
+# Widok API dla Recenzja
+
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -181,13 +202,3 @@ def recenzja_create(request):
         serializer.save(uzytkownik=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# Widoki HTML
-
-def przepis_list(request):
-    przepisy = Przepis.objects.all()[:5]  # Pobierz pierwsze 5 przepisów
-    return render(request, 'przepisy/lista.html', {'przepisy': przepisy})
-
-def przepis_detail_html(request, pk):
-    przepis = get_object_or_404(Przepis, pk=pk)
-    return render(request, 'przepisy/przepis_detail.html', {'przepis': przepis})
