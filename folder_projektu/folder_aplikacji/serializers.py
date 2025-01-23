@@ -1,3 +1,5 @@
+# serializers.py:
+
 from rest_framework import serializers
 from .models import Person, Uzytkownik, Kuchnia, Skladnik, NarzedzieKuchenne, PreferencjeDietetyczne, Przepis, Recenzja, UlubionePrzepisy, MONTHS
 from datetime import date

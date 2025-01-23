@@ -1,3 +1,5 @@
+# Admin.py:
+
 from django.contrib import admin
 from .models import Person, Uzytkownik, Kuchnia, Skladnik, NarzedzieKuchenne, PreferencjeDietetyczne, Przepis, Recenzja, UlubionePrzepisy, PrzepisSkladnik
 

@@ -1,0 +1,22 @@
+# detail.html: 
+
+{% extends 'base.html' %}
+
+{% block title %}{{ przepis.tytul }}{% endblock %}
+
+{% block content %}
+<h1>{{ przepis.tytul }}</h1>
+{% if przepis.obrazek %}
+<img src="{{ przepis.obrazek.url }}" class="img-fluid mb-4" alt="Zdjęcie przepisu">
+{% endif %}
+<p><strong>Opis:</strong> {{ przepis.opis }}</p>
+<h3 class="mt-4">Składniki:</h3>
+<ul>
+    {% for skladnik in przepis.skladniki.all %}
+    <li>{{ skladnik.nazwa }}</li>
+    {% endfor %}
+</ul>
+<h3 class="mt-4">Instrukcje:</h3>
+<p>{{ przepis.instrukcje }}</p>
+<a href="{% url 'przepis-list' %}" class="btn btn-secondary mt-4">Powrót do listy</a>
+{% endblock %}
