@@ -1,3 +1,5 @@
+# urls.py:
+
 from django.urls import path
 from . import views
 
@@ -20,4 +22,5 @@ urlpatterns = [
     # HTML views
     path('przepisy/', views.przepis_list_html, name='przepis-list-html'),
     path('przepisy/<int:pk>/', views.przepis_detail_html, name='przepis-detail-html'),
+    
 ]
