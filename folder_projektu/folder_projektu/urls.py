@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from django.contrib import admin
+from django.urls import path, include
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),  # Ścieżka do panelu administratora
+    path('api/', include('folder_aplikacji.urls')),  # Ścieżki API aplikacji
+    path('', include('folder_aplikacji.urls')),  # Ścieżki widoków HTML aplikacji 
 ]

@@ -6,14 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from .models import Przepis, Kuchnia, Skladnik, Recenzja, UlubionePrzepisy, NarzedzieKuchenne
-from .serializers import (
-    PrzepisSerializer,
-    KuchniaSerializer,
-    SkladnikSerializer,
-    RecenzjaSerializer,
-    UlubionePrzepisySerializer,
-    NarzedzieKuchenneSerializer,
-)
+from .serializers import PrzepisSerializer, KuchniaSerializer, SkladnikSerializer, RecenzjaSerializer, UlubionePrzepisySerializer, NarzedzieKuchenneSerializer
 
 # Widoki API dla modelu Przepis
 @api_view(['GET', 'POST'])
