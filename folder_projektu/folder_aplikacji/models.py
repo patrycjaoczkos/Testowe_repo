@@ -120,3 +120,12 @@ class UlubionePrzepisy(models.Model):
 
     def __str__(self):
         return f"{self.uzytkownik.username} dodał do ulubionych {self.przepis.tytul}"
+    
+    
+class PrzepisSkladnik(models.Model):
+    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE)
+    skladnik = models.ForeignKey(Skladnik, on_delete=models.CASCADE)
+    ilosc = models.CharField(max_length=100, help_text="Ilość składnika (np. 2 łyżki)")
+
+    def __str__(self):
+        return f"{self.skladnik.nazwa} w {self.przepis.tytul}"
