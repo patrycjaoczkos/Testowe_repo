@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .models import Person, Uzytkownik, Przepis, Kuchnia, Skladnik, Recenzja, UlubionePrzepisy, NarzedzieKuchenne
 from .serializers import (
+    PersonSerializer,
     PrzepisSerializer,
     KuchniaSerializer,
     SkladnikSerializer,
@@ -14,7 +15,8 @@ from .serializers import (
     UlubionePrzepisySerializer,
     NarzedzieKuchenneSerializer,
 )
-
+from django.shortcuts import render
+from .models import Przepis
 
 @api_view(['GET'])
 def person_list(request):
@@ -182,9 +184,9 @@ def recenzja_create(request):
 
 # Widoki HTML
 
-def przepis_list_html(request):
-    przepisy = Przepis.objects.all()
-    return render(request, 'przepisy/przepis_list.html', {'przepisy': przepisy})
+def przepis_list(request):
+    przepisy = Przepis.objects.all()[:5]  # Pobierz pierwsze 5 przepisów
+    return render(request, 'przepisy/lista.html', {'przepisy': przepisy})
 
 def przepis_detail_html(request, pk):
     przepis = get_object_or_404(Przepis, pk=pk)
