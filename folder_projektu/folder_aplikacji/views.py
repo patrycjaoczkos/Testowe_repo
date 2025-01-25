@@ -1,17 +1,35 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Person, Przepis, Kuchnia, Skladnik, Recenzja
+from django.contrib.auth.models import User
+from .models import Person, Przepis, Kuchnia, PrzepisSkladnik, Skladnik, Recenzja, UlubionePrzepisy, PreferencjeDietetyczne
 from .serializers import (
     PersonSerializer,
     PrzepisSerializer,
     KuchniaSerializer,
     SkladnikSerializer,
     RecenzjaSerializer,
+    UserSerializer,  # Dodajemy serializer dla użytkownika
 )
+
+# Widok rejestracji użytkownika
+@api_view(['POST'])
+def register_user(request):
+    """Rejestracja nowego użytkownika."""
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                "message": "User registered successfully!",
+                "username": user.username,
+                "email": user.email,
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Widoki API dla modelu Person
 
@@ -38,6 +56,8 @@ def person_detail(request, pk):
 
 
 @api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def person_update(request, pk):
     """Aktualizuje dane konkretnej osoby."""
     try:
@@ -56,7 +76,7 @@ def person_update(request, pk):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def person_delete(request, pk):
-    """Usuwa konkretną osobę."""
+    """Usuwa konkretną osobę (tylko administrator może usunąć)."""
     try:
         person = Person.objects.get(pk=pk)
     except Person.DoesNotExist:
@@ -86,6 +106,8 @@ def przepis_list_api(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def przepis_detail(request, pk):
     przepis = get_object_or_404(Przepis, pk=pk)
 
@@ -94,6 +116,10 @@ def przepis_detail(request, pk):
         return Response(serializer.data)
 
     elif request.method == 'PUT':
+        # Użytkownik może edytować tylko swoje przepisy
+        if przepis.autor != request.user and not request.user.is_staff:
+            return Response({"error": "You can only edit your own recipes."}, status=status.HTTP_403_FORBIDDEN)
+        
         serializer = PrzepisSerializer(przepis, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -101,20 +127,12 @@ def przepis_detail(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
+        # Użytkownik może usuwać tylko swoje przepisy, lub administratorzy mogą usuwać wszystkie
+        if przepis.autor != request.user and not request.user.is_staff:
+            return Response({"error": "You can only delete your own recipes."}, status=status.HTTP_403_FORBIDDEN)
+        
         przepis.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# Widoki HTML dla modelu Przepis
-
-def przepis_list_html(request):
-    przepisy = Przepis.objects.all()[:5]  # Pobierz pierwsze 5 przepisów
-    return render(request, 'przepisy/lista.html', {'przepisy': przepisy})
-
-
-def przepis_detail_html(request, pk):
-    przepis = get_object_or_404(Przepis, pk=pk)
-    return render(request, 'przepisy/przepis_detail.html', {'przepis': przepis})
 
 
 # Widoki API dla modelu Kuchnia
@@ -202,3 +220,19 @@ def recenzja_create(request):
         serializer.save(uzytkownik=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def przepis_detail_html(request, pk):
+    przepis = Przepis.objects.get(pk=pk)
+    przepisy_skladniki = PrzepisSkladnik.objects.filter(przepis=przepis)
+    
+    return render(request, 'przepis_detail.html', {'przepis': przepis, 'przepisy_skladniki': przepisy_skladniki})
+
+def przepisy_list_html(request):
+    search_query = request.GET.get('search', '')  # Pobieramy zapytanie z formularza
+    przepisy = Przepis.objects.all()
+
+    if search_query:
+        przepisy = przepisy.filter(tytul__icontains=search_query)  # Filtrowanie po tytule przepisu
+
+    return render(request, 'przepisy_list.html', {'przepisy': przepisy})
+

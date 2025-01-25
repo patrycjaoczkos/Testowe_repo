@@ -18,9 +18,9 @@ urlpatterns = [
     # API endpoint for Recenzja
     path('api/recenzje/', views.recenzja_create, name='recenzja-create'),
 
-    # HTML views
-    path('przepisy/', views.przepis_list_html, name='przepis-list-html'),
-    path('przepisy/<int:pk>/', views.przepis_detail_html, name='przepis-detail-html'),
+    path('przepisy/', views.przepisy_list_html, name='przepis-list-html'),
+
+    path('przepisy/<int:pk>/', views.przepis_detail_html, name='przepis-detail-html'),  # URL do szczegółów przepisu
     
     # Jeśli masz dodatkowe URL dla innych aplikacji, usuń ten wpis, jeśli nie jest potrzebny
     # path('api/', include('folder_aplikacji.urls')), # Usuń jeśli nie masz tej aplikacji
