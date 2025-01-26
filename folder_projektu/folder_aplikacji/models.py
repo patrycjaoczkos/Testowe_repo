@@ -72,6 +72,7 @@ class Przepis(models.Model):
     data_utworzenia = models.DateTimeField(auto_now_add=True)
     data_aktualizacji = models.DateTimeField(auto_now=True)
     kategoria = models.CharField(max_length=100, blank=True, null=True)
+    obrazek = models.ImageField(upload_to='images/', blank=True, null=True)
 
     def calkowity_czas(self):
         return self.czas_przygotowania + self.czas_gotowania
