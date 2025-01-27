@@ -8,7 +8,22 @@ from django.contrib.auth.models import User
 from .models import Person, Przepis, Kuchnia, PrzepisSkladnik, Skladnik, UlubionePrzepisy
 from .serializers import (PersonSerializer, PrzepisSerializer, KuchniaSerializer,SkladnikSerializer, UserSerializer,  # Dodajemy serializer dla użytkownika
 )
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
+@login_required
+def toggle_favorite(request, przepis_id):
+    """
+    Widok obsługujący dodanie lub usunięcie przepisu z ulubionych.
+    """
+    przepis = get_object_or_404(Przepis, id=przepis_id)
+    ulubione, created = UlubionePrzepisy.objects.get_or_create(uzytkownik=request.user, przepis=przepis)
+
+    if not created:
+        ulubione.delete()  # Usuń z ulubionych
+        return JsonResponse({"status": "removed"})
+    else:
+        return JsonResponse({"status": "added"})
 # Widok rejestracji użytkownika
 @api_view(['POST'])
 def register_user(request):
