@@ -22,11 +22,20 @@ urlpatterns = [
 
     path('przepisy/<int:pk>/', views.przepis_detail_html, name='przepis-detail-html'),
     
+     # Widok do wyświetlania ulubionych przepisów
+    path('ulubione/', views.ulubione_przepisy, name='ulubione_przepisy'),
+
+    # Widok do dodawania przepisu do ulubionych
+    path('add_to_favorites/<int:przepis_id>/', views.add_to_favorites, name='add_to_favorites'),
+
+    # Widok do usuwania przepisu z ulubionych
+    path('remove_from_favorites/<int:przepis_id>/', views.remove_from_favorites, name='remove_from_favorites'),
+]
+    
     # URL do szczegółów przepisu
     
     # Jeśli masz dodatkowe URL dla innych aplikacji, usuń ten wpis, jeśli nie jest potrzebny
     # path('api/', include('folder_aplikacji.urls')), # Usuń jeśli nie masz tej aplikacji
-]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
