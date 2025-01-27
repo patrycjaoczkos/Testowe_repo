@@ -30,6 +30,12 @@ urlpatterns = [
 
     # Widok do usuwania przepisu z ulubionych
     path('remove_from_favorites/<int:przepis_id>/', views.remove_from_favorites, name='remove_from_favorites'),
+    
+    path('api/login/', views.login_user, name='login_user'),
+    path('api/register/', views.register_user, name='register_user'),
+    path('panel/', views.user_panel, name='user_panel'),
+    path('logout/', views.logout_user, name='logout_user'),
+    
 ]
     
     # URL do szczegółów przepisu
