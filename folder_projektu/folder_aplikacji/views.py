@@ -39,7 +39,6 @@ def register_user(request):
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 # Widoki API dla modelu Person
 
 @api_view(['GET'])
@@ -234,4 +233,6 @@ def przepisy_list_html(request):
         przepisy = przepisy.filter(tytul__icontains=search_query)  # Filtrowanie po tytule przepisu
 
     return render(request, 'przepisy_list.html', {'przepisy': przepisy})
+
+
 
