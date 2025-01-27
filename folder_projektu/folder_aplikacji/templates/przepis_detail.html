@@ -116,9 +116,135 @@
             font-size: 2rem;
             color: #e78c3c;
         }
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+nav {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+.modal-content input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #555;
+}
+
+.close {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 5px 10px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.close:hover {
+    background-color: darkred;
+}
+
     </style>
 </head>
 <body>
+    
+    <nav>
+        <div>
+            <a href="#">Strona Główna</a>
+            <a href="#">O Nas</a>
+            <a href="#">Kontakt</a>
+        </div>
+        <div>
+            <button onclick="openModal('loginModal')">Zaloguj</button>
+            <button onclick="openModal('registerModal')">Zarejestruj</button>
+        </div>
+    </nav>
+    
+    <!-- Modal Logowania -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <button class="close" onclick="closeModal('loginModal')">&times;</button>
+        <h2>Logowanie</h2>
+        <input type="text" placeholder="Nazwa użytkownika" required>
+        <input type="password" placeholder="Hasło" required>
+        <button>Zaloguj</button>
+    </div>
+</div>
+
+<!-- Modal Rejestracji -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <button class="close" onclick="closeModal('registerModal')">&times;</button>
+        <h2>Rejestracja</h2>
+        <input type="text" placeholder="Nazwa użytkownika" required>
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Hasło" required>
+        <button>Zarejestruj</button>
+    </div>
+</div>
+
+
+    
     <div class="container">
         <h1>{{ przepis.tytul }}</h1>
 
@@ -154,5 +280,17 @@
 
         <footer>&copy; {{ now.year }} Świat Przepisów</footer>
     </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+    
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    </script>
+    
+
 </body>
 </html>
