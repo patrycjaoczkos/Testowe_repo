@@ -10,6 +10,10 @@ from .models import Person, Przepis, Kuchnia, PrzepisSkladnik, Skladnik, Ulubion
 from .serializers import (PersonSerializer, PrzepisSerializer, KuchniaSerializer,SkladnikSerializer, UserSerializer,  # Dodajemy serializer dla użytkownika
 )
 from django.contrib.auth.decorators import login_required
+<<<<<<< HEAD
+=======
+from django.http import JsonResponse
+>>>>>>> d571f5ac121e14aa18c568905868ab268f923517
 
 @login_required
 def toggle_favorite(request, przepis_id):
