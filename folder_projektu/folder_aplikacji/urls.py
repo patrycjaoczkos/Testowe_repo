@@ -17,9 +17,6 @@ urlpatterns = [
     path('api/skladniki/', views.skladnik_list, name='skladnik-list'),
     path('api/skladniki/<int:pk>/', views.skladnik_detail, name='skladnik-detail'),
 
-    # API endpoint for Recenzja
-    path('api/recenzje/', views.recenzja_create, name='recenzja-create'),
-
     path('przepisy/', views.przepisy_list_html, name='przepis-list-html'),
 
     path('przepisy/<int:pk>/', views.przepis_detail_html, name='przepis-detail-html'),  # URL do szczegółów przepisu

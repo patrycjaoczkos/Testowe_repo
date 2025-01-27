@@ -32,25 +32,6 @@ class Skladnik(models.Model):
     opis = models.TextField(blank=True, null=True)
     weganin = models.BooleanField(default=True)
     bezglutenowe = models.BooleanField(default=True)
-    
-
-class NarzedzieKuchenne(models.Model):
-    nazwa = models.CharField(max_length=100, unique=True)
-    opis = models.TextField(blank=True, null=True)
-    odpowiednie_dla = models.ManyToManyField(Kuchnia, blank=True, related_name="narzedzia_kuchenne")
-
-    def __str__(self):
-        return self.nazwa
-
-class PreferencjeDietetyczne(models.Model):
-    uzytkownik = models.OneToOneField(User, on_delete=models.CASCADE, related_name="preferencje_dietetyczne")
-    weganin = models.BooleanField(default=False)
-    wegetarianin = models.BooleanField(default=False)
-    bezglutenowe = models.BooleanField(default=False)
-    alergie = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return f"Preferencje dietetyczne dla {self.uzytkownik.username}"
 
 class Przepis(models.Model):
     DIFFICULTY_LEVELS = (
@@ -79,16 +60,6 @@ class Przepis(models.Model):
 
     def __str__(self):
         return self.tytul
-
-class Recenzja(models.Model):
-    przepis = models.ForeignKey(Przepis, on_delete=models.CASCADE, related_name="recenzje")
-    uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE)
-    ocena = models.PositiveIntegerField(default=1, choices=[(i, str(i)) for i in range(1, 6)])
-    komentarz = models.TextField(blank=True, null=True)
-    data_utworzenia = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Recenzja od {self.uzytkownik.username} - {self.ocena} gwiazdek"
 
 class UlubionePrzepisy(models.Model):
     uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ulubione_przepisy")

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Person, Uzytkownik, Kuchnia, Skladnik, NarzedzieKuchenne, PreferencjeDietetyczne, Przepis, Recenzja, UlubionePrzepisy, MONTHS
+from .models import Person, Uzytkownik, Kuchnia, Skladnik, Przepis, UlubionePrzepisy, MONTHS
 from datetime import date
 
 
@@ -46,25 +46,6 @@ class SkladnikSerializer(serializers.ModelSerializer):
         fields = ['id', 'nazwa', 'opis', 'weganin', 'bezglutenowe']
         read_only_fields = ['id']
 
-
-class NarzedzieKuchenneSerializer(serializers.ModelSerializer):
-    odpowiednie_dla = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Kuchnia.objects.all()
-    )
-
-    class Meta:
-        model = NarzedzieKuchenne
-        fields = ['id', 'nazwa', 'opis', 'odpowiednie_dla']
-        read_only_fields = ['id']
-
-
-class PreferencjeDietetyczneSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PreferencjeDietetyczne
-        fields = ['id', 'uzytkownik', 'weganin', 'wegetarianin', 'bezglutenowe', 'alergie']
-        read_only_fields = ['id']
-
-
 class PrzepisSerializer(serializers.ModelSerializer):
     # Zmiana PrimaryKeyRelatedField na serializer, aby pokazać pełne dane
     skladniki = SkladnikSerializer(many=True, read_only=True)  # Pokaż pełne dane składników
@@ -78,15 +59,6 @@ class PrzepisSerializer(serializers.ModelSerializer):
             'autor', 'data_utworzenia', 'data_aktualizacji'
         ]
         read_only_fields = ['id', 'autor', 'data_utworzenia', 'data_aktualizacji']
-
-
-
-class RecenzjaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Recenzja
-        fields = ['id', 'przepis', 'uzytkownik', 'ocena', 'komentarz', 'data_utworzenia']
-        read_only_fields = ['id', 'uzytkownik', 'data_utworzenia']
-
 
 class UlubionePrzepisySerializer(serializers.ModelSerializer):
     class Meta:

@@ -5,14 +5,8 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
-from .models import Person, Przepis, Kuchnia, PrzepisSkladnik, Skladnik, Recenzja, UlubionePrzepisy, PreferencjeDietetyczne
-from .serializers import (
-    PersonSerializer,
-    PrzepisSerializer,
-    KuchniaSerializer,
-    SkladnikSerializer,
-    RecenzjaSerializer,
-    UserSerializer,  # Dodajemy serializer dla użytkownika
+from .models import Person, Przepis, Kuchnia, PrzepisSkladnik, Skladnik, UlubionePrzepisy
+from .serializers import (PersonSerializer, PrzepisSerializer, KuchniaSerializer,SkladnikSerializer, UserSerializer,  # Dodajemy serializer dla użytkownika
 )
 
 # Widok rejestracji użytkownika
@@ -210,16 +204,6 @@ def skladnik_detail(request, pk):
 
 
 # Widok API dla Recenzja
-
-@api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def recenzja_create(request):
-    serializer = RecenzjaSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save(uzytkownik=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def przepis_detail_html(request, pk):
     przepis = Przepis.objects.get(pk=pk)
