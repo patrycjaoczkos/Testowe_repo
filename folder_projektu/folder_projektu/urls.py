@@ -24,4 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Ścieżka do panelu administratora
     path('api/', include('folder_aplikacji.urls')),  # Ścieżki API aplikacji
     path('', include('folder_aplikacji.urls')),  # Ścieżki widoków HTML aplikacji 
+    path('users/', include('folder_aplikacji.urls')),
 ]

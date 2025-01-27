@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Caveat:wght@700&family=Lobster&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     {% load static %}
-    {% load static %}
     <script src="{% static 'js/auth.js' %}"></script>
     <style>
         body {
@@ -260,28 +259,33 @@ nav a:hover {
         </div>
     </nav>
   
-    <!-- Modal Logowania -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <button class="close" onclick="closeModal('loginModal')">&times;</button>
-            <h2>Logowanie</h2>
-            <input type="text" placeholder="Nazwa użytkownika" required>
-            <input type="password" placeholder="Hasło" required>
-            <button>Zaloguj</button>
+    <form id="loginForm" method="post">
+        {% csrf_token %}
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('loginModal')">&times;</button>
+                <h2>Logowanie</h2>
+                <input type="text" id="loginUsername" name="username" placeholder="Nazwa użytkownika" required>
+                <input type="password" id="loginPassword" name="password" placeholder="Hasło" required>
+                <button type="button" onclick="login()">Zaloguj</button>
+            </div>
         </div>
-    </div>
+    </form>
     
     <!-- Modal Rejestracji -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-            <button class="close" onclick="closeModal('registerModal')">&times;</button>
-            <h2>Rejestracja</h2>
-            <input type="text" placeholder="Nazwa użytkownika" required>
-            <input type="email" placeholder="Email" required>
-            <input type="password" placeholder="Hasło" required>
-            <button>Zarejestruj</button>
+    <form id="registerForm" method="post">
+        {% csrf_token %}
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('registerModal')">&times;</button>
+                <h2>Rejestracja</h2>
+                <input type="text" id="registerUsername" name="username" placeholder="Nazwa użytkownika" required>
+                <input type="email" id="registerEmail" name="email" placeholder="Email" required>
+                <input type="password" id="registerPassword" name="password" placeholder="Hasło" required>
+                <button type="button" onclick="register()">Zarejestruj</button>
+            </div>
         </div>
-    </div>
+    </form>
 
     <header>
         <h1>Świat Przepisów</h1>
@@ -316,7 +320,7 @@ nav a:hover {
         {% endfor %}
     </div>
 
-    <div id="registerModal" class="modal">
+    <!-- <div id="registerModal" class="modal">
         <div class="modal-content">
             <button class="close" onclick="closeModal('registerModal')">&times;</button>
             <h2>Rejestracja</h2>
@@ -325,7 +329,7 @@ nav a:hover {
             <input type="password" id="registerPassword" placeholder="Hasło" required>
             <button onclick="register()">Zarejestruj</button>
         </div>
-    </div>
+    </div> -->
 
     <footer>
         <p><i class="fas fa-copyright"></i> {{ now.year }} Świat Przepisów</p>
@@ -341,5 +345,9 @@ nav a:hover {
             document.getElementById(modalId).style.display = 'none';
         }
     </script>
+
+{% load static %}
+<script src="{% static 'js/auth.js' %}"></script>
+
 </body>
 </html>

@@ -14,6 +14,8 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
 from django.contrib.auth import logout
+from django.views.decorators.csrf import csrf_exempt
+
 @login_required
 def toggle_favorite(request, przepis_id):
     """
@@ -274,13 +276,20 @@ def remove_from_favorites(request, przepis_id):
     ulubiony.delete()
     return JsonResponse({'message': 'Przepis usunięty z ulubionych'}, status=200)
 
+
 @api_view(['POST'])
 def register_user(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({"message": "Użytkownik zarejestrowany pomyślnie!"}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    """Rejestracja nowego użytkownika."""
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                "message": "User registered successfully!",
+                "username": user.username,
+                "email": user.email,
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def login_user(request):
@@ -298,7 +307,14 @@ login_required
 def user_panel(request):
     """Panel użytkownika."""
     return render(request, 'user_panel.html', {'user': request.user})
-
+@csrf_exempt
+@api_view(['POST'])
+def register_user(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Użytkownik zarejestrowany pomyślnie!"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

@@ -82,15 +82,16 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
-
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    
+    class UserSerializer(serializers.ModelSerializer):
+        password = serializers.CharField(write_only=True)  # Hasło tylko do zapisu
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'email']
+        fields = ['username', 'email', 'password']  # Pola wymagane do rejestracji
 
     def create(self, validated_data):
+        """Tworzy nowego użytkownika z zaszyfrowanym hasłem"""
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
