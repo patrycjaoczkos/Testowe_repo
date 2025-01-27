@@ -5,6 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('api/register/', views.register_user, name='register_user'),
     # API endpoints for Przepis
     path('api/przepisy/', views.przepis_list_api, name='przepis-list-api'),
     path('api/przepisy/<int:pk>/', views.przepis_detail, name='przepis-detail'),
@@ -19,7 +20,9 @@ urlpatterns = [
 
     path('przepisy/', views.przepisy_list_html, name='przepis-list-html'),
 
-    path('przepisy/<int:pk>/', views.przepis_detail_html, name='przepis-detail-html'),  # URL do szczegółów przepisu
+    path('przepisy/<int:pk>/', views.przepis_detail_html, name='przepis-detail-html'),
+    
+    # URL do szczegółów przepisu
     
     # Jeśli masz dodatkowe URL dla innych aplikacji, usuń ten wpis, jeśli nie jest potrzebny
     # path('api/', include('folder_aplikacji.urls')), # Usuń jeśli nie masz tej aplikacji
