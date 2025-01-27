@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -9,7 +10,11 @@ from .models import Person, Przepis, Kuchnia, PrzepisSkladnik, Skladnik, Ulubion
 from .serializers import (PersonSerializer, PrzepisSerializer, KuchniaSerializer,SkladnikSerializer, UserSerializer,  # Dodajemy serializer dla użytkownika
 )
 from django.contrib.auth.decorators import login_required
+<<<<<<< HEAD
+
+=======
 from django.http import JsonResponse
+>>>>>>> 4e1dcdbf09e48be1f1e727a8fdcae56857582599
 
 @login_required
 def toggle_favorite(request, przepis_id):
@@ -234,5 +239,41 @@ def przepisy_list_html(request):
 
     return render(request, 'przepisy_list.html', {'przepisy': przepisy})
 
+
+@login_required
+def ulubione_przepisy(request):
+    """Wyświetla listę ulubionych przepisów zalogowanego użytkownika."""
+    ulubione = UlubionePrzepisy.objects.filter(uzytkownik=request.user)
+    przepisy = [ulubiony.przepis for ulubiony in ulubione]
+    return render(request, 'ulubione_przepisy.html', {'przepisy': przepisy})
+
+# Widok do dodawania przepisu do ulubionych
+@login_required
+def add_to_favorites(request, przepis_id):
+    """Dodaje przepis do ulubionych użytkownika."""
+    przepis = get_object_or_404(Przepis, id=przepis_id)
+
+    # Sprawdzamy, czy przepis już jest w ulubionych
+    if UlubionePrzepisy.objects.filter(uzytkownik=request.user, przepis=przepis).exists():
+        return JsonResponse({'message': 'Przepis już w ulubionych'}, status=400)
+
+    # Tworzymy nowy obiekt UlubionePrzepisy
+    UlubionePrzepisy.objects.create(uzytkownik=request.user, przepis=przepis)
+    return JsonResponse({'message': 'Przepis dodany do ulubionych'}, status=200)
+
+# Widok do usuwania przepisu z ulubionych
+@login_required
+def remove_from_favorites(request, przepis_id):
+    """Usuwa przepis z ulubionych użytkownika."""
+    przepis = get_object_or_404(Przepis, id=przepis_id)
+
+    # Sprawdzamy, czy przepis jest w ulubionych
+    ulubiony = UlubionePrzepisy.objects.filter(uzytkownik=request.user, przepis=przepis)
+    if not ulubiony.exists():
+        return JsonResponse({'message': 'Przepis nie jest w ulubionych'}, status=400)
+
+    # Usuwamy przepis z ulubionych
+    ulubiony.delete()
+    return JsonResponse({'message': 'Przepis usunięty z ulubionych'}, status=200)
 
 
